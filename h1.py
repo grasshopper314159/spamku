@@ -28,7 +28,7 @@ def get_word(POS, syllables, preceding_word):
 def get_syllable_count(word):
     pass
 
-def markov_chain(text):
+def markov_chain(text, m_dict):
     '''The input is a string of text and the output will be a dictionary with each word as
        a key and each value as the list of words that come after the key in the text.'''
     
@@ -36,20 +36,26 @@ def markov_chain(text):
     words = text.split(' ')
     
     # Initialize a default dictionary to hold all of the words and next words
-    m_dict = defaultdict(list)
+    #m_dict = defaultdict(list)
     
     # Create a zipped list of all of the word pairs and put them in word: list of next words format
     for current_word, next_word in zip(words[0:-1], words[1:]):
         m_dict[current_word].append(next_word)
 
     # Convert the default dict back into a dictionary
-    m_dict = dict(m_dict)
+    #m_dict = dict(m_dict)
     return m_dict
 
-def process(list):
+def process_one_list(a_list):
     t=""
-    for line in list:
-        t+=line.strip()
+    for lines in a_list:
+        t+=line.strip()+' '
+    return t
+
+def process_list_of_lists(lists):
+    t=""
+    for lines in lists:
+        t = process_one_list(lines)
     return t
 
 
