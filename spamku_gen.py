@@ -85,6 +85,12 @@ def sort_words_by_syllable(pronunciation_dict, text):
     return syllable_dict;
         
 
+
+
+
+
+
+
 def main():
     pronunciation_dict = cmudict.dict()
     haiku_list=[]
