@@ -19,13 +19,19 @@ import nltk
 import os
 from collections import defaultdict
 import random
+nltk.download('cmudict')
+from nltk.corpus import cmudict
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 
 
 def get_word(POS, syllables, preceding_word):
     pass
 
-def get_syllable_count(word):
-    pass
+def get_syllable_count(pro, word):
+    #print(pro[word])
+    syl=[ x for x in pro[word][0] if x[-1].isdigit()]
+    return len(syl)
 
 def markov_chain(text):
     '''The input is a string of text and the output will be a dictionary with each word as
@@ -65,6 +71,7 @@ def generate_sentence(chain, count=15):
     return(sentence)
 
 def main():
+    pro = cmudict.dict()
     haiku_list=[]
     # This file contains 8893 spam-ku
     filename="corpus/spamku.txt"
@@ -77,7 +84,8 @@ def main():
     
     mc=markov_chain(text)
     s = generate_sentence(mc, 15)
-    print('15 words', s)
+    print('15 words from mc:', s)
+    print("Procrastinate has", get_syllable_count(pro, 'procrastinate'), "syllables")
 
 
 if __name__=='__main__':
