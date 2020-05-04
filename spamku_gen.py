@@ -18,10 +18,9 @@
 import nltk
 import os
 from collections import defaultdict
+import random
 
-c=0
-l=[]
-haiku_list=[]
+
 def get_word(POS, syllables, preceding_word):
     pass
 
@@ -46,31 +45,6 @@ def markov_chain(text):
     m_dict = dict(m_dict)
     return m_dict
 
-def process_one_list(a_list):
-    t=""
-    for lines in a_list:
-        t+=line.strip()+' '
-    return t
-
-def process_list_of_lists(lists):
-    t=""
-    for lines in lists:
-        t = process_one_list(lines)
-    return t
-
-
-# This file contains 8893 spam-ku
-filename="spamku.txt"
-file = open(filename, mode = 'r')
-#text=file.read()
-text = ""
-
-for line in file:
-    text += line.strip()+' '
-file.close()
-mc=markov_chain(text)
-
-import random
 
 def generate_sentence(chain, count=15):
     '''Input a dictionary in the format of key = current word, value = list of next words
@@ -90,7 +64,39 @@ def generate_sentence(chain, count=15):
     sentence += '.'
     return(sentence)
 
+def main():
+    haiku_list=[]
+    # This file contains 8893 spam-ku
+    filename="corpus/spamku.txt"
+    file = open(filename, mode = 'r')
+    # text is for input into a crude markov chain
+    text = ""
+    for line in file:
+        text += line.strip()+' '
+    file.close()
+    
+    mc=markov_chain(text)
+    s = generate_sentence(mc, 15)
+    print('15 words', s)
 
 
+if __name__=='__main__':
+    main()
 
+
+###############################################################
+#               scractch work
+###########################################################
+
+def process_one_list(a_list):
+    t=""
+    for lines in a_list:
+        t+=line.strip()+' '
+    return t
+
+def process_list_of_lists(lists):
+    t=""
+    for lines in lists:
+        t = process_one_list(lines)
+    return t
         

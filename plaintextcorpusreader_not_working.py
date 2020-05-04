@@ -18,3 +18,4 @@ print(len(sents))
 print(sents[1])
 #wordlists.words('connectives')
 
+fdist1 = nltk.FreqDist(poems)
