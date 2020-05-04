@@ -19,6 +19,7 @@ import nltk
 import os
 from collections import defaultdict
 import random
+import string
 nltk.download('cmudict')
 from nltk.corpus import cmudict
 nltk.download('punkt')
@@ -28,9 +29,9 @@ nltk.download('averaged_perceptron_tagger')
 def get_word(POS, syllables, preceding_word):
     pass
 
-def get_syllable_count(pro, word):
-    #print(pro[word])
-    syl=[ x for x in pro[word][0] if x[-1].isdigit()]
+def get_syllable_count(pronunciation_dict, word):
+    #print(pronunciation_dict[word])
+    syl=[ x for x in pronunciation_dict[word][0] if x[-1].isdigit()]
     return len(syl)
 
 def markov_chain(text):
@@ -70,8 +71,22 @@ def generate_sentence(chain, count=15):
     sentence += '.'
     return(sentence)
 
+def sort_words_by_syllable(pronunciation_dict, text):
+    syllable_dict = defaultdict(list)
+    for i in range(8):
+        for word in text.split(' '):
+            try:
+                word= word.translate(str.maketrans('', '', string.punctuation))
+                if get_syllable_count(pronunciation_dict, word.lower()) == i:
+                    syllable_dict[i].append(word)
+            except:
+                pass
+                #print(word)
+    return syllable_dict;
+        
+
 def main():
-    pro = cmudict.dict()
+    pronunciation_dict = cmudict.dict()
     haiku_list=[]
     # This file contains 8893 spam-ku
     filename="corpus/spamku.txt"
@@ -85,8 +100,11 @@ def main():
     mc=markov_chain(text)
     s = generate_sentence(mc, 15)
     print('15 words from mc:', s)
-    print("Procrastinate has", get_syllable_count(pro, 'procrastinate'), "syllables")
-
+    print("Procrastinate has", get_syllable_count(pronunciation_dict, 'procrastinate'), "syllables")
+    #keys to this dict are digits 0 to 7.  Each key giveys you a list of words that with key-length syllables
+    syllable_dict = sort_words_by_syllable(pronunciation_dict, text)
+    print("All 6 syllable words in our spamku corpus:")
+    print(syllable_dict[6])
 
 if __name__=='__main__':
     main()
