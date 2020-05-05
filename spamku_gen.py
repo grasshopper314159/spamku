@@ -19,12 +19,14 @@ import nltk
 import os
 from collections import defaultdict
 import random
+import pickle
 import string
 nltk.download('cmudict')
 from nltk.corpus import cmudict
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
-
+pronunciation_dict = cmudict.dict()
+from nltk import pos_tag
 
 def get_word(POS, syllables, preceding_word):
     pass
@@ -85,10 +87,77 @@ def sort_words_by_syllable(pronunciation_dict, text):
     return syllable_dict;
         
 
+def loadData(filename): 
+    file = open(filename, 'rb')      
+    data = pickle.load(file) 
+    file.close()
+    return data
+
+pos_patterns = loadData("pos_patterns.p")
+pos_dict = loadData("pos_dict.p")
 
 
+def get_pos_label(word):
+    return pos_tag(word)[0][1]
 
 
+def choose_target_syllable_count(pattern, number_of_syllables_wanted):
+    from random import randint
+    syllable_lengths = {
+    'VB': 1,
+    'DT': 1,
+    'RB': 2,
+    'NN': 5,
+    'VBG': 3,
+    'IN': 1,
+    'NNS': 4,
+    'PRP$': 1,
+    'CC': 1,
+    'JJ': 2,
+    'WP': 1,
+    'VBZ': 1,
+    'PRP': 1, 
+    'VBN': 2,
+    'JJS': 2,
+    'MD': 1, 
+    'TO': 1,
+    'VBD': 2,
+    'VBP': 2,
+    'WRB': 1,
+    'CD': 1, #cardinal digit, could be more
+    'RBR': 2,
+    'JJR': 2,
+    'WDT': 1,
+    'WP$': 1
+    }
+    syllable_counts = []
+    possible = False
+    pattern_len = len(pattern.split())
+    max_per_word = number_of_syllables_wanted - pattern_len
+    for i in range(len(pattern)):
+        while possible == False:
+            x = randint(1, syllable_lengths[pattern.split()[i]])
+            if x <= max_per_word:
+                possible = True
+        syllable_counts.append[x]
+        number_of_syllables_wanted -= x
+        pattern_len -= 1
+        max_per_word = number_of_syllables_wanted - pattern_len
+    return syllable_counts
+    syllable_counts = []
+    possible = False
+    pattern_len = len(pattern.split())
+    max_per_word = number_of_syllables_wanted - pattern_len
+    for i in range(len(pattern)):
+        while possible == False:
+            x = randint(1, syllable_lengths[pattern.split()[i]])
+            if x <= max_per_word:
+                possible = True
+        syllable_counts.append[x]
+        number_of_syllables_wanted -= x
+        pattern_len -= 1
+        max_per_word = number_of_syllables_wanted - pattern_len
+    return syllable_counts
 
 
 def main():
@@ -111,6 +180,27 @@ def main():
     syllable_dict = sort_words_by_syllable(pronunciation_dict, text)
     print("All 6 syllable words in our spamku corpus:")
     print(syllable_dict[6])
+    print(get_pos_label(['capicola']))
+    print(get_pos_label(['pastrami']))
+    print(get_pos_label(['andouille']))
+    pos_patterns = loadData("pos_patterns.p")
+    pos_dict = loadData("pos_dict.p")
+    pattern_prob = []
+    for k,v in pos_patterns.items():
+        for i in range(v):
+            try:
+                if v != "":
+                    pattern_prob.append(k)
+            except:
+                print("error: ", k, v)
+    num_diff_patterns = len(pattern_prob)
+    
+
+
+    line1 = random.choice(pattern_prob)
+    line2 = random.choice(pattern_prob)  # need to have two separate prob for 5 and 7
+    line3 = random.choice(pattern_prob)
+    l1=choose_target_syllable_count(line1, 5)
 
 if __name__=='__main__':
     main()
